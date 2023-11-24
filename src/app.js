@@ -14,8 +14,8 @@ function App() {
         </nav>
         <Routes>
         {/* Définissez vos routes avec le composant Route */}
-        <Route path="/" exact component={LaunchPage} />
-        <Route path="/config" component={ConfigPage} />
+        <Route path="/" element={<LaunchPage/>} />
+        <Route path="/config" element={<ConfigPage />} />
         </Routes>
       </div>
     </Router>
