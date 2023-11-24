@@ -11,8 +11,12 @@ function ConfigPage() {
   };
 
   const generateRandomPin = () => {
-    return Math.floor(Math.random() * 9999) + 1;
+    const min = 1000; // La valeur minimale pour un PIN à quatre chiffres
+    const max = 9999; // La valeur maximale pour un PIN à quatre chiffres
+    const pin = Math.floor(Math.random() * (max - min + 1)) + min;
+    return pin.toString().padStart(4, '0'); // Ajoute des zéros à gauche si nécessaire
   };
+  
 
   const pin = generateRandomPin();
 
@@ -21,7 +25,7 @@ function ConfigPage() {
   };
 
   return (
-    <div>
+    <div class="main-container">
       <h2>ConfigPage</h2>
       <form action="" method="get" className="form_config">
         <select name="nb_joueurs" id="nb_joueurs" onChange={handleSelectChange} value={selectedPlayers}>

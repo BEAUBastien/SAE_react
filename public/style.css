@@ -1,0 +1,21 @@
+body {
+    background-image: url("img/bg_day.png");
+    background-size: cover; /* Permet à l'image de couvrir toute la surface du fond */
+    background-position: center; /* Centre l'image horizontalement et verticalement */
+    background-repeat: no-repeat; /* Évite la répétition de l'image */
+    height: 100vh; /* Ajuste la hauteur du corps à 100% de la hauteur de la vue */
+    margin: 0; /* Supprime la marge par défaut du corps */
+    display: flex; /* Utilise le modèle de boîte flexible pour centrer le contenu si nécessaire */
+    align-items: center; /* Centre verticalement le contenu */
+}
+
+.main-container {
+    text-align: center; /* Centre le contenu horizontalement */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 45px;
+    border-radius: 30px;
+}

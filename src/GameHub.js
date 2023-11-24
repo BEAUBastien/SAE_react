@@ -22,7 +22,7 @@ function GameHub() {
   };
 
   return (
-    <div>
+    <div class="main-container">
       <h1 id="Titre">ROARRR !</h1>
       <h3 id="pin_game">Pin : {pin}</h3>
       <div>
