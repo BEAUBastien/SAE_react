@@ -21,5 +21,16 @@ body {
 }
 
 #Titre {
-    
+    font-family:'Creepster';
+    font-size: 65px;
 }
+
+.config-page {
+    position: relative;
+  }
+  
+  .form-config {
+    position: relative;
+  }
+  
+  

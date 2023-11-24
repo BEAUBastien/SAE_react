@@ -1,45 +1,46 @@
-// ConfigPage.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 function ConfigPage() {
-    const [selectedPlayers, setSelectedPlayers] = useState(8);
-    const navigate = useNavigate();
+  const [selectedPlayers, setSelectedPlayers] = useState(8);
+  const navigate = useNavigate();
 
-    const handleSelectChange = (event) => {
-        setSelectedPlayers(parseInt(event.target.value, 10));
-    };
+  const handleSelectChange = (event) => {
+    setSelectedPlayers(parseInt(event.target.value, 10));
+  };
 
-    const generateRandomPin = () => {
-        const min = 1000; // La valeur minimale pour un PIN à quatre chiffres
-        const max = 9999; // La valeur maximale pour un PIN à quatre chiffres
-        const pin = Math.floor(Math.random() * (max - min + 1)) + min;
-        return pin.toString().padStart(4, '0'); // Ajoute des zéros à gauche si nécessaire
-    };
+  const generateRandomPin = () => {
+    const min = 1000; // Valeur minimale pour un PIN à quatre chiffres
+    const max = 9999; // Valeur maximale pour un PIN à quatre chiffres
+    const pin = Math.floor(Math.random() * (max - min + 1)) + min;
+    return pin.toString().padStart(4, '0'); // Ajoute des zéros à gauche si nécessaire
+  };
 
+  const pin = generateRandomPin();
 
-    const pin = generateRandomPin();
+  const handleValidate = () => {
+    navigate(`/hub/${pin}?players=${selectedPlayers}`);
+  };
 
-    const handleValidate = () => {
-        navigate(`/hub/${pin}?players=${selectedPlayers}`);
-    };
-
-    return (
-        <div class="main-container">
-            <h1 id="Titre">ROARRR !</h1>
-            <h2>ConfigPage</h2>
-            <form action="" method="get" className="form_config">
-                <select name="nb_joueurs" id="nb_joueurs" onChange={handleSelectChange} value={selectedPlayers}>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
-                <Link to={`/hub/${pin}?players=${selectedPlayers}`}>
-                    <input type="submit" value="Valider" />
-                </Link>
-            </form>
-        </div>
-    );
+  return (
+    <div className='main-container'>
+    <h1 id='Titre'>ROARRR !</h1>
+      <h2>ConfigPage</h2>
+      <form action="" method="get" >
+        <select name="nb_joueurs" id="nb_joueurs" onChange={handleSelectChange} value={selectedPlayers}>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+        <Link to={`/hub/${pin}?players=${selectedPlayers}`}>
+          <input type="submit" value="Valider" />
+        </Link>
+      </form>
+      <Link to="/">
+          <button type="button" className="back-button">Retour</button>
+        </Link>
+    </div>
+  );
 }
 
 export default ConfigPage;
