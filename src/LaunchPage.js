@@ -8,7 +8,7 @@ function LaunchPage() {
             <div>
                 <h3 id='bienvenue'>Bienvenue</h3>
                 <Link to='/config'>
-                    <button type="button">Lancer la partie</button>
+                    <button type="button">Creer une partie</button>
                 </Link>
             </div>
         </div>
