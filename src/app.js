@@ -1,10 +1,25 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+
+import LaunchPage from './LaunchPage';
+import ConfigPage from './ConfigPage';
 function App() {
     return (
-        <div>
-            <h1>Mon Premier Composant React</h1>
-            <p>Bienvenue dans le monde de React!</p>
-        </div>
+        <Router>
+      <div>
+      <nav>
+          {/* Utilisez le composant Link pour créer des liens vers vos pages */}
+          <Link to="/">Launch</Link>
+          <Link to="/config">Config</Link>
+        </nav>
+        <Routes>
+        {/* Définissez vos routes avec le composant Route */}
+        <Route path="/" exact component={LaunchPage} />
+        <Route path="/config" component={ConfigPage} />
+        </Routes>
+      </div>
+    </Router>
+        
     );
 }
 export default App;
