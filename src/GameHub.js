@@ -32,7 +32,7 @@ function GameHub() {
           ))}
         </ul>
       </div>
-      <Link to={`/game/${pin}`}>
+      <Link to={`/game/${pin}/game`}>
         <input type="submit" value="Lancer la partie" />
       </Link>
     </div>
