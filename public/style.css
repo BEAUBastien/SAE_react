@@ -1,5 +1,5 @@
 body {
-    background-image: url("img/bg_day.png");
+    background-image: url("img/jours.png");
     background-size: cover; /* Permet à l'image de couvrir toute la surface du fond */
     background-position: center; /* Centre l'image horizontalement et verticalement */
     background-repeat: no-repeat; /* Évite la répétition de l'image */
