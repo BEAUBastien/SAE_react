@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { DataSnapshot, getDatabase, onValue, ref, set, update } from 'firebase/database';
+import 'firebase/database';
 
 function ConfigPage() {
   const [selectedPlayers, setSelectedPlayers] = useState(8);
@@ -18,7 +20,9 @@ function ConfigPage() {
 
   const pin = generateRandomPin();
 
-  const handleValidate = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Empêche le rechargement de la page
+    creationPartie(pin); 
     navigate(`/hub/${pin}?players=${selectedPlayers}`);
   };
 
@@ -26,21 +30,33 @@ function ConfigPage() {
     <div className='main-container'>
     <h1 id='Titre'>ROARRR !</h1>
       <h2>ConfigPage</h2>
-      <form action="" method="get" >
+      <form onSubmit={handleSubmit} method="get" >
         <select name="nb_joueurs" id="nb_joueurs" onChange={handleSelectChange} value={selectedPlayers}>
           <option value="8">8</option>
           <option value="9">9</option>
           <option value="10">10</option>
         </select>
-        <Link to={`/hub/${pin}?players=${selectedPlayers}`}>
-          <input type="submit" value="Valider" />
-        </Link>
+        <input type="submit" value="Valider" />
       </form>
       <Link to="/">
           <button type="button" className="back-button">Retour</button>
         </Link>
     </div>
   );
+}
+
+
+function creationPartie(partieId) {
+    const db = getDatabase();
+    const reference = ref(db, 'Partie' + partieId);
+
+    set(reference,{
+      Joueurs : {
+        nbjouer : 0
+      },
+      deroulement : "att",
+      pin : partieId
+    });
 }
 
 export default ConfigPage;
