@@ -82,6 +82,9 @@ onValue(reference, (snapshot) => {
 
 
 function Start() {
+    const body = document.body;
+    const newBackgroundImage = 'url("img/nuit.jpg")';
+    body.style.backgroundImage = newBackgroundImage;
     setTimeout(() => {
         changeDeroulement("1", "cupidon");
         console.log("C’est la nuit, tout le village s’endort, les joueurs ferment les yeux");
