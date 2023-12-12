@@ -82,9 +82,7 @@ onValue(reference, (snapshot) => {
 
 
 function Start() {
-    const body = document.body;
-    const newBackgroundImage = 'url("img/nuit.jpg")';
-    body.style.backgroundImage = newBackgroundImage;
+    document.body.className = 'bcgroundN';
     setTimeout(() => {
         changeDeroulement("1", "cupidon");
         console.log("C’est la nuit, tout le village s’endort, les joueurs ferment les yeux");
@@ -142,6 +140,7 @@ function Sorciere() {
 }
 
 function Jour() {
+    document.body.className = 'bcgroundJ';
     setTimeout(() => {
         changeDeroulement("1", "chasseur");
         console.log("C’est le matin, le village se réveille, tout le monde se réveille et ouvre les yeux…");
@@ -186,6 +185,7 @@ function VoteVillage() {
 }
 
 function Nuit() {
+    document.body.className = 'bcgroundN';
     setTimeout(() => {
         changeDeroulement("1", "voyante");
         console.log("Cupidon se réveille !");

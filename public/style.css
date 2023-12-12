@@ -1,5 +1,4 @@
-body {
-    background-image: url("img/jours.png");
+body {   
     background-size: cover; /* Permet à l'image de couvrir toute la surface du fond */
     background-position: center; /* Centre l'image horizontalement et verticalement */
     background-repeat: no-repeat; /* Évite la répétition de l'image */
@@ -7,6 +6,13 @@ body {
     margin: 0; /* Supprime la marge par défaut du corps */
     display: flex; /* Utilise le modèle de boîte flexible pour centrer le contenu si nécessaire */
     align-items: center; /* Centre verticalement le contenu */
+}
+
+.bcgroundJ {
+    background-image: url("img/jours.png");
+}
+.bcgroundN {
+    background-image: url("img/nuit.jpg");
 }
 
 .main-container {
