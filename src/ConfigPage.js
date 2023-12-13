@@ -12,16 +12,16 @@ function ConfigPage() {
   };
 
   const generateRandomPin = () => {
-    const min = 1000; // Valeur minimale pour un PIN à quatre chiffres
-    const max = 9999; // Valeur maximale pour un PIN à quatre chiffres
+    const min = 1000; 
+    const max = 9999; 
     const pin = Math.floor(Math.random() * (max - min + 1)) + min;
-    return pin.toString().padStart(4, '0'); // Ajoute des zéros à gauche si nécessaire
+    return pin.toString().padStart(4, '0'); 
   };
 
   const pin = generateRandomPin();
 
   const handleSubmit = (event) => {
-    event.preventDefault(); // Empêche le rechargement de la page
+    event.preventDefault();
     creationPartie(pin); 
     navigate(`/hub/${pin}?players=${selectedPlayers}`);
   };
