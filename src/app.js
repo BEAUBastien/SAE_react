@@ -5,6 +5,7 @@ import LaunchPage from './LaunchPage';
 import ConfigPage from './ConfigPage';
 import GameHub from './GameHub';
 import Game from './Game';
+import Card from './card';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/config" element={<ConfigPage />} />
         <Route path="/hub/:pin" element={<GameHub />} />
         <Route path="/game/:pin/game" element={<Game />} />
+        <Route path="/card" element={<Card />} />
         </Routes>
       </div>
     </Router>
