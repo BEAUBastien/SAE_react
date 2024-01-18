@@ -52,7 +52,13 @@ function creationPartie(partieId) {
 
     set(reference,{
       Joueurs : {
-        nbjouer : 0
+        "Joueur1": {
+          "etat": "vivant",
+          "id": 1,
+          "pseudo": "riri",
+          "role": "villageois",
+          "vote": 0
+        }
       },
       deroulement : "att",
       pin : partieId

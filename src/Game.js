@@ -1,17 +1,18 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import firebase from 'firebase/app';
 import 'firebase/database'
 import firebaseConfig from './config'
 import { DataSnapshot, getDatabase, onValue, ref, set, update } from 'firebase/database';
 import { useState, useEffect } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 function Game() {
+    let { pin } = useParams();
     const [deroulement, setDeroulement] = useState('');
 
     useEffect(() => {
         const db = getDatabase();
-        const reference = ref(db, 'Partie1/deroulement');
+        const reference = ref(db, 'Partie'+pin+'/deroulement');
         onValue(reference, (snapshot) => {
             const data = snapshot.val();
             setDeroulement(data);
@@ -20,16 +21,16 @@ function Game() {
     // var deroulement = data;
     return (
         <div class="main-container">
-            {deroulement === 'start' && <Start />}
-            {deroulement === 'cupidon' && <Cupidon />}
-            {deroulement === 'voyante' && <Voyante />}
-            {deroulement === 'loup' && <Loups />}
-            {deroulement === 'sorciere' && <Sorciere />}
-            {deroulement === 'jour' && <Jour />}
-            {deroulement === 'chasseur' && <Chasseur />}
-            {deroulement === 'maire' && <Maire />}
-            {deroulement === 'voteVillage' && <VoteVillage />}
-            {deroulement === 'nuit' && <Nuit />}
+            {deroulement === 'start' && <Start partieId={pin} />}
+            {deroulement === 'cupidon' && <Cupidon partieId={pin} />}
+            {deroulement === 'voyante' && <Voyante partieId={pin} />}
+            {deroulement === 'loup' && <Loups partieId={pin} />}
+            {deroulement === 'sorciere' && <Sorciere partieId={pin} />}
+            {deroulement === 'jour' && <Jour partieId={pin} />}
+            {deroulement === 'chasseur' && <Chasseur partieId={pin} />}
+            {deroulement === 'maire' && <Maire partieId={pin} />}
+            {deroulement === 'voteVillage' && <VoteVillage partieId={pin} />}
+            {deroulement === 'nuit' && <Nuit partieId={pin} />}
 
 
 
@@ -81,10 +82,10 @@ onValue(reference, (snapshot) => {
 
 
 
-function Start() {
+function Start({ partieId }) {
     document.body.className = 'bcgroundN';
     setTimeout(() => {
-        changeDeroulement("1", "cupidon");
+        changeDeroulement(partieId, "cupidon");
         console.log("C’est la nuit, tout le village s’endort, les joueurs ferment les yeux");
         console.log("cc");
     }, 2000);
@@ -94,9 +95,9 @@ function Start() {
     );
 }
 
-function Cupidon() {
+function Cupidon({ partieId }) {
     setTimeout(() => {
-        changeDeroulement("1", "voyante");
+        changeDeroulement(partieId, "voyante");
         console.log("Cupidon se réveille !");
     }, 2000);
 
@@ -106,9 +107,9 @@ function Cupidon() {
 }
 
 
-function Voyante() {
+function Voyante({ partieId }) {
     setTimeout(() => {
-        changeDeroulement("1", "loup");
+        changeDeroulement(partieId, "loup");
         console.log("La Voyante se réveille, et désigne un joueur dont elle veut sonder la véritable personnalité !");
     }, 2000);
 
@@ -117,9 +118,9 @@ function Voyante() {
     );
 }
 
-function Loups() {
+function Loups({ partieId }) {
     setTimeout(() => {
-        changeDeroulement("1", "sorciere");
+        changeDeroulement(partieId, "sorciere");
         console.log("Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!");
     }, 2000);
 
@@ -128,9 +129,9 @@ function Loups() {
     );
 }
 
-function Sorciere() {
+function Sorciere({ partieId }) {
     setTimeout(() => {
-        changeDeroulement("1", "jour");
+        changeDeroulement(partieId, "villageois"); //jour
         console.log("La Sorcière se réveille, je lui montre la victime des Loups-Garous. Va-t-elle user de sa potion de guérison, ou d’empoisonnement ?");
     }, 2000);
 
@@ -139,10 +140,10 @@ function Sorciere() {
     );
 }
 
-function Jour() {
+function Jour({ partieId }) {
     document.body.className = 'bcgroundJ';
     setTimeout(() => {
-        changeDeroulement("1", "chasseur");
+        changeDeroulement(partieId, "chasseur");
         console.log("C’est le matin, le village se réveille, tout le monde se réveille et ouvre les yeux…");
     }, 2000);
 
@@ -151,9 +152,9 @@ function Jour() {
     );
 }
 
-function Chasseur() {
+function Chasseur({ partieId }) {
     setTimeout(() => {
-        changeDeroulement("1", "maire");
+        changeDeroulement(partieId, "maire");
         console.log("Le chasseur joue");
     }, 2000);
 
@@ -162,9 +163,9 @@ function Chasseur() {
     );
 }
 
-function Maire() {
+function Maire({ partieId }) {
     setTimeout(() => {
-        changeDeroulement("1", "voteVillage");
+        changeDeroulement(partieId, "voteVillage");
         console.log("vote du nouveau maire");
     }, 2000);
 
@@ -173,9 +174,9 @@ function Maire() {
     );
 }
 
-function VoteVillage() {
+function VoteVillage({ partieId }) {
     setTimeout(() => {
-        changeDeroulement("1", "nuit");
+        changeDeroulement(partieId, "nuit");
         console.log("vote de la personne à tuer");
     }, 2000);
 
@@ -184,10 +185,10 @@ function VoteVillage() {
     );
 }
 
-function Nuit() {
+function Nuit({ partieId }) {
     document.body.className = 'bcgroundN';
     setTimeout(() => {
-        changeDeroulement("1", "voyante");
+        changeDeroulement(partieId, "voyante");
         console.log("Cupidon se réveille !");
     }, 2000);
     console.log("C’est la nuit, tout le village s’endort, les joueurs ferment les yeux");
