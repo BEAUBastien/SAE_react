@@ -2,7 +2,7 @@ import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/database'
 import firebaseConfig from './config'
-import { DataSnapshot, getDatabase, onValue, ref, set, update } from 'firebase/database';
+import { DataSnapshot, getDatabase, onValue, ref, set, update, remove } from 'firebase/database';
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 
@@ -21,12 +21,13 @@ function Game() {
     // var deroulement = data;
     return (
         <div class="main-container">
+            {deroulement === 'att' && <Prepa partieId={pin} />}
             {deroulement === 'start' && <Start partieId={pin} />}
             {deroulement === 'cupidon' && <Cupidon partieId={pin} />}
             {deroulement === 'voyante' && <Voyante partieId={pin} />}
             {deroulement === 'loup' && <Loups partieId={pin} />}
             {deroulement === 'sorciere' && <Sorciere partieId={pin} />}
-            {deroulement === 'jour' && <Jour partieId={pin} />}
+            {deroulement === 'villageois' && <Jour partieId={pin} />}
             {deroulement === 'chasseur' && <Chasseur partieId={pin} />}
             {deroulement === 'maire' && <Maire partieId={pin} />}
             {deroulement === 'voteVillage' && <VoteVillage partieId={pin} />}
@@ -76,7 +77,20 @@ onValue(reference, (snapshot) => {
 
 
 
+function Prepa({ partieId }){
+    const db = getDatabase();
+    const joueurRef = ref(db, 'Partie' + partieId + '/Joueurs/Joueur1');
 
+    remove(joueurRef)
+        .then(() => {
+            console.log("Joueur supprimé avec succès.");
+        })
+        .catch((error) => {
+            console.log("Erreur lors de la suppression du joueur: ", error);
+        });
+
+    changeDeroulement(partieId, "start");
+}
 
 
 

@@ -1,6 +1,7 @@
 // GameHub.js
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
+import { getDatabase, ref, onValue, off } from 'firebase/database';
 
 function GameHub() {
   const location = useLocation();
@@ -21,14 +22,18 @@ function GameHub() {
     return Math.floor(Math.random() * 9999) + 1;
   };
 
+  const joueurs = useJoueurs(pin);
+  console.log(joueurs);
+
   return (
     <div class="main-container">
       <h1 id="Titre">ROARRR !</h1>
       <h3 id="pin_game">Pin : {pin}</h3>
       <div>
+        <h3>Liste des Joueurs</h3>
         <ul>
-          {Array.from({ length: numberOfPlayers }, (_, index) => (
-            <li key={index}>{`Joueur ${index + 1}`}</li>
+          {joueurs.map((joueur, index) => (
+            <li key={index}>{joueur}</li>
           ))}
         </ul>
       </div>
@@ -37,6 +42,31 @@ function GameHub() {
       </Link>
     </div>
   );
+}
+
+function useJoueurs( partieId ) {
+  const [joueurs, setJoueurs] = useState([]);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const joueursRef = ref(db, 'Partie' + partieId + '/Joueurs');
+
+    const unsubscribe = onValue(joueursRef, (snapshot) => {
+      const joueursData = snapshot.val();
+      const joueursList = joueursData
+        ? Object.keys(joueursData).map(key => joueursData[key].pseudo || "Inconnu")
+        : [];
+      setJoueurs(joueursList);
+    }, (error) => {
+      // Gérer l'erreur
+      console.error(error);
+    });
+
+    // Se désabonner de l'écouteur lors du démontage du composant
+    return () => off(joueursRef, 'value', unsubscribe);
+  }, [partieId]);
+
+  return joueurs;
 }
 
 export default GameHub;
