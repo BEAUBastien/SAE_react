@@ -39,4 +39,32 @@ body {
     position: relative;
   }
   
+  .card {
+    text-align: center;
+  }
+  
+  .grid_card {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    max-width: 1500px;
+    margin: auto;
+  }
+  
+  .square {
+    
+    border: 1px solid black;
+    padding: 20px;
+    cursor: pointer;
+    width: 200px; /* Taille fixe */
+    height: 300px; /* Taille fixe */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .square.dead {
+    background-color: grey;
+  }
   
