@@ -2,7 +2,7 @@ import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/database'
 import firebaseConfig from './config'
-import { DataSnapshot, getDatabase, onValue, ref, set, update, remove } from 'firebase/database';
+import { DataSnapshot, getDatabase, onValue, ref, set, update, remove, get } from 'firebase/database';
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 
@@ -22,7 +22,9 @@ function Game() {
     return (
         <div class="main-container">
             {deroulement === 'att' && <Prepa partieId={pin} />}
-            {deroulement === 'start' && <Start partieId={pin} />}
+            {/* {deroulement === 'start' && <Start partieId={pin} />} */}
+            {deroulement === 'start' && <EffectuerVote partieId={pin} />}
+
             {deroulement === 'cupidon' && <Cupidon partieId={pin} />}
             {deroulement === 'voyante' && <Voyante partieId={pin} />}
             {deroulement === 'loup' && <Loups partieId={pin} />}
@@ -64,7 +66,16 @@ function changeDeroulement(partieId, deroulement) {
         deroulement: deroulement,
     });
 }
-// changeDeroulement("1", "att");
+
+function changeEtat(partieId, joueur, etat) {
+    const db = getDatabase();
+    const reference = ref(db, 'Partie' + partieId + '/Joueurs/' + joueur);
+
+    update(reference, {
+        etat: etat,
+    });
+}
+
 
 
 const db = getDatabase();
@@ -212,6 +223,50 @@ function Nuit({ partieId }) {
         </h1>
     );
 }
+
+
+
+
+function EffectuerVote({partieId}) {
+    const db = getDatabase();
+    const joueursRef = ref(db, 'Partie' + partieId + '/Joueurs');
+
+    useEffect(() => {
+        const unsubscribe = onValue(joueursRef, (snapshot) => {
+            const joueurs = snapshot.val();
+            const loupsVivants = Object.values(joueurs).filter(j => j.role === 'loup' && j.etat === 'vivant').length;
+
+            let totalVotes = 0;
+            let maxVotes = 0;
+            let candidats = [];
+
+            // Calculer le total des votes
+            Object.entries(joueurs).forEach(([key, joueur]) => {
+                totalVotes += joueur.vote;
+
+                if (joueur.vote > maxVotes) {
+                    maxVotes = joueur.vote;
+                    candidats = [key];
+                } else if (joueur.vote === maxVotes) {
+                    candidats.push(key);
+                }
+            });
+
+            if (totalVotes === loupsVivants) {
+                const selectionne = candidats[Math.floor(Math.random() * candidats.length)];
+                console.log(selectionne);
+                changeEtat(partieId, selectionne, "presqueMort");
+                changeDeroulement(partieId, "Yo");
+            }
+        });
+
+        return () => unsubscribe();
+    }, [partieId]);
+
+    return null; // La fonction ne renvoie rien pour le rendu
+}
+
+
 
 
 
