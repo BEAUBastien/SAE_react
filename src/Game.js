@@ -5,6 +5,9 @@ import firebaseConfig from './config'
 import { DataSnapshot, getDatabase, onValue, ref, set, update, remove, get } from 'firebase/database';
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
+import fourcheImage from './img/fourche.png';
+import deadImage from './img/dead.png';
+
 
 function Game() {
     let { pin } = useParams();
@@ -12,7 +15,7 @@ function Game() {
 
     useEffect(() => {
         const db = getDatabase();
-        const reference = ref(db, 'Partie'+pin+'/deroulement');
+        const reference = ref(db, 'Partie' + pin + '/deroulement');
         onValue(reference, (snapshot) => {
             const data = snapshot.val();
             setDeroulement(data);
@@ -21,6 +24,7 @@ function Game() {
     // var deroulement = data;
     return (
         <div class="main-container">
+            <Card />
             {deroulement === 'att' && <Prepa partieId={pin} />}
             {/* {deroulement === 'start' && <Start partieId={pin} />} */}
             {deroulement === 'start' && <EffectuerVote partieId={pin} />}
@@ -88,7 +92,7 @@ onValue(reference, (snapshot) => {
 
 
 
-function Prepa({ partieId }){
+function Prepa({ partieId }) {
     const db = getDatabase();
     const joueurRef = ref(db, 'Partie' + partieId + '/Joueurs/Joueur1');
 
@@ -227,7 +231,7 @@ function Nuit({ partieId }) {
 
 
 
-function EffectuerVote({partieId}) {
+function EffectuerVote({ partieId }) {
     const db = getDatabase();
     const joueursRef = ref(db, 'Partie' + partieId + '/Joueurs');
 
@@ -267,7 +271,56 @@ function EffectuerVote({partieId}) {
 }
 
 
+function Card() {
+    const [participants, setParticipants] = useState(7
+    ); // Nombre de participants, peut être dynamique
+    const [squares, setSquares] = useState([]);
+    const [columnCount, setColumnCount] = useState(3); // Nombre initial de colonnes
 
+    useEffect(() => {
+        setSquares(new Array(participants).fill({ status: 'vie' }));
+        // Calculer le nombre de colonnes pour un maximum de deux lignes
+        const cols = Math.ceil(participants / 2);
+        setColumnCount(cols);
+    }, [participants]);
+
+    const toggleStatus = index => {
+        const newSquares = squares.map((square, i) => {
+            if (i === index) {
+                return { ...square, status: square.status === 'vie' ? 'mort' : 'vie' };
+            }
+            return square;
+        });
+        setSquares(newSquares);
+    };
+
+    const gridStyle = {
+        gridTemplateColumns: `repeat(${columnCount}, 1fr)`
+    };
+
+    return (
+
+        <div className="card">
+            <div className="grid_card" style={gridStyle}>
+                {squares.map((square, index) => (
+                    <div
+                        key={index}
+                        className={`square ${square.status === 'mort' ? 'dead' : ''}`}
+                        onClick={() => toggleStatus(index)}
+
+                    >
+                        <p>Pseudo</p>
+                        <div className={`icon-card ${square.status === 'mort' ? 'dead' : ''}`}><img className="icones" src={square.status === 'mort' ? deadImage : fourcheImage}
+                            alt={square.status} /></div>
+
+                        <p>Statut: {square.status}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+
+    );
+}
 
 
 
