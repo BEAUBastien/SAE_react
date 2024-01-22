@@ -55,7 +55,7 @@ function creationPartie(partieId) {
         "Joueur1": {
           "etat": "vivant",
           "id": 1,
-          "pseudo": "riri",
+          "pseudo": "   ",
           "role": "villageois",
           "vote": 0
         }
