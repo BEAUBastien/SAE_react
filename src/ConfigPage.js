@@ -12,57 +12,62 @@ function ConfigPage() {
   };
 
   const generateRandomPin = () => {
-    const min = 1000; 
-    const max = 9999; 
+    const min = 1000;
+    const max = 9999;
     const pin = Math.floor(Math.random() * (max - min + 1)) + min;
-    return pin.toString().padStart(4, '0'); 
+    return pin.toString().padStart(4, '0');
   };
 
   const pin = generateRandomPin();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    creationPartie(pin); 
+    creationPartie(pin);
     navigate(`/hub/${pin}?players=${selectedPlayers}`);
   };
 
-  return (
-    <div className='main-container'>
-    <h1 id='Titre'>ROARRR !</h1>
-      <h2>ConfigPage</h2>
-      <form onSubmit={handleSubmit} method="get" >
-        <select name="nb_joueurs" id="nb_joueurs" onChange={handleSelectChange} value={selectedPlayers}>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-        </select>
-        <input type="submit" value="Valider" />
-      </form>
-      <Link to="/">
-          <button type="button" className="back-button">Retour</button>
-        </Link>
-    </div>
-  );
-}
+    return (
+      <div className='main-container'>
+        <h1 id='Titre'>ROARRR !</h1>
+        <form onSubmit={handleSubmit} method="get" className="form-config">
+          <label class="checkbox-container">Classique
+            <input type="checkbox" name="style"></input>
+            <span class="checkmark"></span>
+          </label>
+          <label class="checkbox-container">Vampires
+            <input type="checkbox" name="style"></input>
+            <span class="checkmark"></span>
+          </label>
+          <div className="button-container">
+            <input type="submit" value="Valider" className="button-common-style" />
+            <Link to="/" className="button-common-style">
+              <button type="button" className="button-common-style">Retour</button>
+            </Link>
+          </div>
+        </form>
+      </div>
+    );  
+  }
+
 
 
 function creationPartie(partieId) {
-    const db = getDatabase();
-    const reference = ref(db, 'Partie' + partieId);
+  const db = getDatabase();
+  const reference = ref(db, 'Partie' + partieId);
 
-    set(reference,{
-      Joueurs : {
-        "Joueur1": {
-          "etat": "vivant",
-          "id": 1,
-          "pseudo": "   ",
-          "role": "villageois",
-          "vote": 0
-        }
-      },
-      deroulement : "att",
-      pin : partieId
-    });
+  set(reference, {
+    Joueurs: {
+      "Joueur1": {
+        "etat": "vivant",
+        "id": 1,
+        "pseudo": "   ",
+        "role": "villageois",
+        "vote": 0
+      }
+    },
+    deroulement: "att",
+    pin: partieId
+  });
 }
 
 export default ConfigPage;
