@@ -1,39 +1,35 @@
 import React, { useState } from 'react';
 
 
-function Cards() {
-  // Initialiser l'état avec 8 carrés ayant le statut 'vie'
-  const [squares, setSquares] = useState(new Array(7).fill({ status: 'vie' }));
+function App() {
+  // Supposons que vous avez un état qui tient compte du nombre de participants
+  const [participants, setParticipants] = useState(5);
+  const squares = Array.from({ length: participants }, (_, i) => ({ id: i, status: 'vie' }));
 
-  // Fonction pour changer le statut de vie à mort et vice versa
-  const toggleStatus = index => {
-    const newSquares = squares.map((square, i) => {
-      if (i === index) {
-        return { ...square, status: square.status === 'vie' ? 'mort' : 'vie' };
-      }
-      return square;
-    });
-    setSquares(newSquares);
+  const toggleStatus = id => {
+    setParticipants(prevSquares =>
+      prevSquares.map(square =>
+        square.id === id ? { ...square, status: square.status === 'vie' ? 'mort' : 'vie' } : square
+      )
+    );
   };
 
   return (
     <div className='main-container'>
-    <div className="card">
-      <div className="grid_card">
-        {squares.map((square, index) => (
-          <div
-            key={index}
-            className={`square ${square.status === 'mort' ? 'dead' : ''}`}
-            onClick={() => toggleStatus(index)}
-          >
-            <p>Pseudo</p>
-            <p>Statut: {square.status}</p>
-          </div>
-        ))}
-      </div>
+    <div className="flex-container">
+      {squares.map(square => (
+        <div
+          key={square.id}
+          className={`card ${square.status}`}
+          onClick={() => toggleStatus(square.id)}
+        >
+          <p>Pseudo</p>
+          <p>Statut: {square.status}</p>
+        </div>
+      ))}
     </div>
     </div>
   );
 }
 
-export default Cards;
+export default App;
