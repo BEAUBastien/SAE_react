@@ -24,7 +24,7 @@ function Game() {
     // var deroulement = data;
     return (
         <div class="main-container">
-            <Card />
+            <Card partieId={pin} />
             {deroulement === 'att' && <Prepa partieId={pin} />}
             {/* {deroulement === 'start' && <Start partieId={pin} />} */}
             {deroulement === 'start' && <EffectuerVote partieId={pin} />}
@@ -158,6 +158,35 @@ function Loups({ partieId }) {
     );
 }
 
+//TIMER LOUPS
+// function Loups({ partieId }) {
+//     const [timer, setTimer] = useState(45); // Initialiser le timer à 45 secondes
+
+//     useEffect(() => {
+//         // Si le timer est à 0, passer à l'étape suivante
+//         if (timer === 0) {
+//             changeDeroulement(partieId, "sorciere");
+//             console.log("Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!");
+//             return;
+//         }
+
+//         // Décrémenter le timer chaque seconde
+//         const timerId = setTimeout(() => {
+//             setTimer(timer - 1);
+//         }, 1000);
+
+//         // Nettoyer le timeout lors du démontage du composant
+//         return () => clearTimeout(timerId);
+//     }, [timer, partieId]);
+
+//     return (
+//         <div>
+//             <h1>Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!</h1>
+//             <p>Temps restant: {timer} secondes</p>
+//         </div>
+//     );
+// }
+
 function Sorciere({ partieId }) {
     setTimeout(() => {
         changeDeroulement(partieId, "villageois"); //jour
@@ -271,56 +300,57 @@ function EffectuerVote({ partieId }) {
 }
 
 
-function Card() {
-    const [participants, setParticipants] = useState(7
-    ); // Nombre de participants, peut être dynamique
-    const [squares, setSquares] = useState([]);
-    const [columnCount, setColumnCount] = useState(3); // Nombre initial de colonnes
+function Card({ partieId }) {
+    const [joueurs, setJoueurs] = useState([]);
+    const [columnCount, setColumnCount] = useState(3);
 
     useEffect(() => {
-        setSquares(new Array(participants).fill({ status: 'vie' }));
-        // Calculer le nombre de colonnes pour un maximum de deux lignes
-        const cols = Math.ceil(participants / 2);
-        setColumnCount(cols);
-    }, [participants]);
-
-    const toggleStatus = index => {
-        const newSquares = squares.map((square, i) => {
-            if (i === index) {
-                return { ...square, status: square.status === 'vie' ? 'mort' : 'vie' };
+        const db = getDatabase();
+        const joueursRef = ref(db, 'Partie' + partieId + '/Joueurs');
+        onValue(joueursRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const joueursArray = Object.keys(data).map(key => ({
+                    id: key,
+                    ...data[key],
+                }));
+                setJoueurs(joueursArray);
+                const cols = Math.ceil(joueursArray.length / 2);
+                setColumnCount(cols);
+            } else {
+                setJoueurs([]);
             }
-            return square;
         });
-        setSquares(newSquares);
-    };
+    }, [partieId]);
 
     const gridStyle = {
         gridTemplateColumns: `repeat(${columnCount}, 1fr)`
     };
 
     return (
-
         <div className="card">
             <div className="grid_card" style={gridStyle}>
-                {squares.map((square, index) => (
+                {joueurs.map(joueur => (
                     <div
-                        key={index}
-                        className={`square ${square.status === 'mort' ? 'dead' : ''}`}
-                        onClick={() => toggleStatus(index)}
-
+                        key={joueur.id}
+                        className={`square ${joueur.etat === 'mort' ? 'dead' : ''}`}
                     >
-                        <p>Pseudo</p>
-                        <div className={`icon-card ${square.status === 'mort' ? 'dead' : ''}`}><img className="icones" src={square.status === 'mort' ? deadImage : fourcheImage}
-                            alt={square.status} /></div>
-
-                        <p>Statut: {square.status}</p>
+                        <p>{joueur.pseudo}</p>
+                        <div className={`icon-card ${joueur.etat === 'mort' ? 'dead' : ''}`}>
+                            <img 
+                                className="icones" 
+                                src={joueur.etat === 'mort' ? deadImage : fourcheImage}
+                                alt={joueur.etat}
+                            />
+                        </div>
+                        <p>Statut: {joueur.etat}</p>
                     </div>
                 ))}
             </div>
         </div>
-
     );
 }
+
 
 
 
