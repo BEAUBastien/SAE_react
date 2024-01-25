@@ -22,12 +22,13 @@ function Game() {
     return (
         <div class="main-container">
             {deroulement === 'att' && <Prepa partieId={pin} />}
-            {/* {deroulement === 'start' && <Start partieId={pin} />} */}
-            {deroulement === 'start' && <EffectuerVote partieId={pin} />}
+            {deroulement === 'start' && <Start partieId={pin} />}
+
+            {deroulement === 'loup' && <EffectuerVote partieId={pin} />}
 
             {deroulement === 'cupidon' && <Cupidon partieId={pin} />}
             {deroulement === 'voyante' && <Voyante partieId={pin} />}
-            {deroulement === 'loup' && <Loups partieId={pin} />}
+            {/* {deroulement === 'loup' && <Loups partieId={pin} />} */}
             {deroulement === 'sorciere' && <Sorciere partieId={pin} />}
             {deroulement === 'villageois' && <Jour partieId={pin} />}
             {deroulement === 'chasseur' && <Chasseur partieId={pin} />}
@@ -144,10 +145,11 @@ function Voyante({ partieId }) {
 }
 
 function Loups({ partieId }) {
+    EffectuerVote(partieId);
     setTimeout(() => {
         changeDeroulement(partieId, "sorciere");
         console.log("Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!");
-    }, 2000);
+    }, 120000);
 
     return (
         <h1>Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!</h1>
@@ -256,7 +258,20 @@ function EffectuerVote({partieId}) {
                 const selectionne = candidats[Math.floor(Math.random() * candidats.length)];
                 console.log(selectionne);
                 changeEtat(partieId, selectionne, "presqueMort");
-                changeDeroulement(partieId, "Yo");
+
+                // Réinitialiser les votes
+                const updates = {};
+                Object.keys(joueurs).forEach(joueurKey => {
+                    updates[`Joueurs/${joueurKey}/vote`] = 0;
+                });
+
+                update(ref(db, 'Partie' + partieId), updates)
+                    .then(() => {
+                        changeDeroulement(partieId, "sorciere");
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la réinitialisation des votes:', error);
+                    });
             }
         });
 
