@@ -145,7 +145,7 @@ function Voyante({ partieId }) {
     setTimeout(() => {
         changeDeroulement(partieId, "loup");
         console.log("La Voyante se réveille, et désigne un joueur dont elle veut sonder la véritable personnalité !");
-    }, 2000);
+    }, 120000);
 
     return (
         <h1>La Voyante se réveille, et désigne un joueur dont elle veut sonder la véritable personnalité !</h1>
