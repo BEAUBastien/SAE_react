@@ -228,6 +228,8 @@ function Sorciere({ partieId }) {
 }
 
 function VictoireLoup({ partieId }) {
+    const audio = new Audio(rickAudio_victoire_loup);
+    audio.play();
     setTimeout(() => {
         changeDeroulement(partieId, "fin");
     }, 20000);
