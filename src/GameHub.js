@@ -31,14 +31,14 @@ function GameHub() {
       <h3 id="pin_game">Pin : {pin}</h3>
       <div>
         <h3>Liste des Joueurs</h3>
-        <ul>
+        <ul className='liste_player'>
           {joueurs.map((joueur, index) => (
             <li key={index}>{joueur}</li>
           ))}
         </ul>
       </div>
       <Link to={`/game/${pin}/game`}>
-        <input type="submit" value="Lancer la partie" />
+        <input className='cartoon-button' type="submit" value="Lancer la partie" />
       </Link>
     </div>
   );
