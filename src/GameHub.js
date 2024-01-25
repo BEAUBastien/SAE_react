@@ -26,7 +26,7 @@ function GameHub() {
   console.log(joueurs);
 
   return (
-    <div class="main-container">
+    <div class="main-container main-container-deroule">
       <h1 id="Titre">ROARRR !</h1>
       <h3 id="pin_game">Pin : {pin}</h3>
       <div>

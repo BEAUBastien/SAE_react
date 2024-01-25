@@ -8,6 +8,15 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import fourcheImage from './img/fourche.png';
 import deadImage from './img/dead.png';
 
+//audio
+import rickAudio_start from './audio/rick_1.wav';
+import rickAudio_voyante from './audio/rick_2.wav';
+import rickAudio_loup from './audio/rick_3.wav';
+import rickAudio_soricere from './audio/rick_4.wav';
+import rickAudio_matin from './audio/rick_5.wav';
+import rickAudio_vote from './audio/rick_6.wav';
+import rickAudio_victoire_vill from './audio/rick_7.wav';
+import rickAudio_victoire_loup from './audio/rick_8.wav';
 
 function Game() {
     let { pin } = useParams();
@@ -23,8 +32,10 @@ function Game() {
     }, []);
     // var deroulement = data;
     return (
+        
         <div class="main-container">
-            <Card partieId={pin} />
+            <div class="main-container-card"><Card partieId={pin} /></div>
+            <div class="main-container-deroule">
             {deroulement === 'att' && <Prepa partieId={pin} />}
             {deroulement === 'start' && <Start partieId={pin} />}
 
@@ -58,6 +69,7 @@ function Game() {
             {deroulement === 'maire' && <Maire />}
             {deroulement === 'voteVillage' && <VoteVillage />}
             {deroulement === 'nuit' && <Nuit />} */}
+            </div>
         </div>
     );
 }
@@ -117,12 +129,16 @@ function Prepa({ partieId }) {
 
 
 function Start({ partieId }) {
+
+    const audio = new Audio(rickAudio_start);
+    audio.play();
+    
     document.body.className = 'bcgroundN';
     setTimeout(() => {
         changeDeroulement(partieId, "cupidon");
         console.log("C’est la nuit, tout le village s’endort, les joueurs ferment les yeux");
         console.log("cc");
-    }, 2000);
+    }, 20000);
 
     return (
         <h1>C’est la nuit, tout le village s’endort, les joueurs ferment les yeux</h1>
@@ -133,7 +149,7 @@ function Cupidon({ partieId }) {
     setTimeout(() => {
         changeDeroulement(partieId, "voyante");
         console.log("Cupidon se réveille !");
-    }, 2000);
+    }, 20000);
 
     return (
         <h1>Cupidon se réveille !</h1>
@@ -142,6 +158,9 @@ function Cupidon({ partieId }) {
 
 
 function Voyante({ partieId }) {
+    const audio = new Audio(rickAudio_voyante);
+    audio.play();
+
     setTimeout(() => {
         changeDeroulement(partieId, "loup");
         console.log("La Voyante se réveille, et désigne un joueur dont elle veut sonder la véritable personnalité !");
@@ -166,6 +185,8 @@ function Voyante({ partieId }) {
 
 
 function Loups({ partieId }) {
+    const audio = new Audio(rickAudio_loup);
+    audio.play();
     const [timer, setTimer] = useState(45); // Initialiser le timer à 45 secondes
     EffectuerVoteLoup(partieId);
     useEffect(() => {
@@ -194,10 +215,12 @@ function Loups({ partieId }) {
 }
 
 function Sorciere({ partieId }) {
+    const audio4 = new Audio(rickAudio_soricere);
+    audio4.play();
     setTimeout(() => {
         changeDeroulement(partieId, "passageJour"); 
         console.log("La Sorcière se réveille, je lui montre la victime des Loups-Garous. Va-t-elle user de sa potion de guérison, ou d’empoisonnement ?");
-    }, 2000);
+    }, 20000);
 
     return (
         <h1>La Sorcière se réveille, je lui montre la victime des Loups-Garous. Va-t-elle user de sa potion de guérison, ou d’empoisonnement ?</h1>
@@ -215,10 +238,12 @@ function VictoireLoup({ partieId }) {
 }
 
 function Jour({ partieId }) {
+    const audio = new Audio(rickAudio_matin);
+    audio.play();
     document.body.className = 'bcgroundJ';
     setTimeout(() => {
         changeDeroulement(partieId, "villageois");
-    }, 2000);
+    }, 20000);
 
     return (
         <h1>C’est le matin, le village se réveille, tout le monde se réveille et ouvre les yeux…</h1>
@@ -248,6 +273,8 @@ function Maire({ partieId }) {
 }
 
 function VoteVillage({ partieId }) {
+    const audio = new Audio(rickAudio_vote);
+    audio.play();
     EffectuerVoteVillageois(partieId);
     setTimeout(() => {
         changeDeroulement(partieId, "passageNuit");
@@ -255,11 +282,13 @@ function VoteVillage({ partieId }) {
     }, 120000);
 
     return (
-        <h1>Vote de la personne à tuer</h1>
+        <h1>Le village doit maintenant choisir qui tuer !</h1>
     );
 }
 
 function VictoireVillageois({ partieId }) {
+    const audio = new Audio(rickAudio_victoire_vill);
+    audio.play();
     setTimeout(() => {
         changeDeroulement(partieId, "fin");
     }, 20000);
@@ -270,6 +299,9 @@ function VictoireVillageois({ partieId }) {
 }
 
 function Nuit({ partieId }) {
+
+    const audio = new Audio(rickAudio_start);
+    audio.play();
     document.body.className = 'bcgroundN';
     setTimeout(() => {
         changeDeroulement(partieId, "voyante");
@@ -514,7 +546,7 @@ function Card({ partieId }) {
                                 alt={joueur.etat}
                             />
                         </div>
-                        <p>Statut: {joueur.etat}</p>
+                        <p>{joueur.etat === 'mort' ? 'Mort' : 'En vie'}</p>
                     </div>
                 ))}
             </div>

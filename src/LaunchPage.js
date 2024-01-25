@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function LaunchPage() {
     return (
-        <div class="main-container">
+        <div class="main-container main-container-deroule">
             <h1 id='Titre'>ROARRR !</h1>
             <div>
                 <h3 id='bienvenue'>Bienvenue</h3>

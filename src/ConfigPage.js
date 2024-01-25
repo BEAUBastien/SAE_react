@@ -27,7 +27,7 @@ function ConfigPage() {
   };
 
     return (
-      <div className='main-container'>
+      <div className='main-container main-container-deroule'>
         <h1 id='Titre'>ROARRR !</h1>
         <form onSubmit={handleSubmit} method="get" className="form-config">
           <label class="checkbox-container">Classique
