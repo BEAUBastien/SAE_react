@@ -28,12 +28,14 @@ function Game() {
             {deroulement === 'att' && <Prepa partieId={pin} />}
             {deroulement === 'start' && <Start partieId={pin} />}
 
-            {deroulement === 'loup' && <EffectuerVote partieId={pin} />}
+            {/* {deroulement === 'loup' && <EffectuerVote partieId={pin} />} */}
 
             {deroulement === 'cupidon' && <Cupidon partieId={pin} />}
             {deroulement === 'voyante' && <Voyante partieId={pin} />}
-            {/* {deroulement === 'loup' && <Loups partieId={pin} />} */}
+            {deroulement === 'loup' && <Loups partieId={pin} />}
             {deroulement === 'sorciere' && <Sorciere partieId={pin} />}
+            {deroulement === 'passageJour' && <PassageJour partieId={pin} />}
+            {deroulement === 'victoireLoup' && <VictoireLoup partieId={pin} />}
             {deroulement === 'villageois' && <Jour partieId={pin} />}
             {deroulement === 'chasseur' && <Chasseur partieId={pin} />}
             {deroulement === 'maire' && <Maire partieId={pin} />}
@@ -148,55 +150,65 @@ function Voyante({ partieId }) {
     );
 }
 
-function Loups({ partieId }) {
-    EffectuerVote(partieId);
-    setTimeout(() => {
-        changeDeroulement(partieId, "sorciere");
-        console.log("Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!");
-    }, 120000);
-
-    return (
-        <h1>Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!</h1>
-    );
-}
-
-//TIMER LOUPS
 // function Loups({ partieId }) {
-//     const [timer, setTimer] = useState(45); // Initialiser le timer à 45 secondes
-
-//     useEffect(() => {
-//         // Si le timer est à 0, passer à l'étape suivante
-//         if (timer === 0) {
-//             changeDeroulement(partieId, "sorciere");
-//             console.log("Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!");
-//             return;
-//         }
-
-//         // Décrémenter le timer chaque seconde
-//         const timerId = setTimeout(() => {
-//             setTimer(timer - 1);
-//         }, 1000);
-
-//         // Nettoyer le timeout lors du démontage du composant
-//         return () => clearTimeout(timerId);
-//     }, [timer, partieId]);
+//     EffectuerVoteLoup(partieId);
+//     setTimeout(() => {
+//         changeDeroulement(partieId, "sorciere");
+//         console.log("Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!");
+//     }, 120000);
 
 //     return (
-//         <div>
-//             <h1>Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!</h1>
-//             <p>Temps restant: {timer} secondes</p>
-//         </div>
+//         <h1>Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!</h1>
 //     );
 // }
 
+
+function Loups({ partieId }) {
+    const [timer, setTimer] = useState(45); // Initialiser le timer à 45 secondes
+    EffectuerVoteLoup(partieId);
+    useEffect(() => {
+        // Si le timer est à 0, passer à l'étape suivante
+        if (timer === 0) {
+            changeDeroulement(partieId, "sorciere");
+            console.log("Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!");
+            return;
+        }
+
+        // Décrémenter le timer chaque seconde
+        const timerId = setTimeout(() => {
+            setTimer(timer - 1);
+        }, 120000);
+
+        // Nettoyer le timeout lors du démontage du composant
+        return () => clearTimeout(timerId);
+    }, [timer, partieId]);
+
+    return (
+        <div>
+            <h1>Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!</h1>
+            <p>Temps restant: {timer} secondes</p>
+        </div>
+    );
+}
+
 function Sorciere({ partieId }) {
     setTimeout(() => {
-        changeDeroulement(partieId, "villageois"); //jour
+        changeDeroulement(partieId, "passageJour"); 
         console.log("La Sorcière se réveille, je lui montre la victime des Loups-Garous. Va-t-elle user de sa potion de guérison, ou d’empoisonnement ?");
     }, 2000);
 
     return (
         <h1>La Sorcière se réveille, je lui montre la victime des Loups-Garous. Va-t-elle user de sa potion de guérison, ou d’empoisonnement ?</h1>
+    );
+}
+
+function VictoireLoup({ partieId }) {
+    setTimeout(() => {
+        changeDeroulement(partieId, "fin");
+    }, 20000);
+
+    return (
+        <h1>Les loups ont gagnées</h1>
     );
 }
 
@@ -262,7 +274,7 @@ function Nuit({ partieId }) {
 
 
 
-function EffectuerVote({ partieId }) {
+function EffectuerVoteLoup( partieId ) {
     const db = getDatabase();
     const joueursRef = ref(db, 'Partie' + partieId + '/Joueurs');
 
@@ -296,6 +308,7 @@ function EffectuerVote({ partieId }) {
                 const updates = {};
                 Object.keys(joueurs).forEach(joueurKey => {
                     updates[`Joueurs/${joueurKey}/vote`] = 0;
+                    updates[`Joueurs/${joueurKey}/votePoster`] = false;
                 });
 
                 update(ref(db, 'Partie' + partieId), updates)
@@ -313,6 +326,46 @@ function EffectuerVote({ partieId }) {
 
     return null; // La fonction ne renvoie rien pour le rendu
 }
+
+function PassageJour({partieId}) {
+    console.log("PassageJour");
+    const db = getDatabase();
+    const partieRef = ref(db, 'Partie' + partieId);
+
+    useEffect(() => {
+        const unsubscribe = onValue(partieRef, (snapshot) => {
+            const partieData = snapshot.val();
+            const joueurs = partieData.Joueurs;
+            const updates = {};
+
+            // Mise à jour des états des joueurs
+            Object.entries(joueurs).forEach(([key, joueur]) => {
+                if (joueur.etat === 'presqueMort') {
+                    updates[`Joueurs/${key}/etat`] = 'mort';
+                }
+            });
+
+            // Appliquer les mises à jour
+            update(ref(db, 'Partie' + partieId), updates).then(() => {
+                const joueursMisAJour = { ...joueurs, ...updates };
+
+                // Vérifier les conditions de victoire
+                const joueursVivants = Object.values(joueursMisAJour).filter(joueur => joueur.etat === 'vivant');
+                const sontTousLoups = joueursVivants.every(joueur => joueur.role === 'loup');
+
+                const nouvelEtatDeroulement = sontTousLoups ? 'victoireLoup' : 'villageois';
+                update(ref(db, 'Partie' + partieId), { deroulement: nouvelEtatDeroulement });
+            }).catch(error => {
+                console.error('Erreur lors de la mise à jour des états des joueurs:', error);
+            });
+        });
+
+        return () => unsubscribe();
+    }, [partieId]);
+
+    return null; // La fonction ne renvoie rien pour le rendu
+}
+
 
 
 function Card({ partieId }) {
