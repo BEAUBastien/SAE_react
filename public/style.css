@@ -21,11 +21,19 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: white;
     padding: 45px;
     border-radius: 30px;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+.main-container-deroule {
+  background-color: white;
+  padding: 30px;
+  border-radius: 30px;
+  border: black solid 1px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+}
+
 
 
 .form-config {
@@ -190,7 +198,7 @@ li.liste_player {
     grid-template-columns: repeat(4, 1fr);
     gap: 25px;
     max-width: 1500px;
-    margin: auto;
+    margin: 15px;
   }
   
   .square {
@@ -205,7 +213,7 @@ li.liste_player {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgb(243, 243, 243);
+    background-color: white;
     font-size: 20px;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
   }

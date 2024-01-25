@@ -32,8 +32,10 @@ function Game() {
     }, []);
     // var deroulement = data;
     return (
+        
         <div class="main-container">
-            <Card partieId={pin} />
+            <div class="main-container-card"><Card partieId={pin} /></div>
+            <div class="main-container-deroule">
             {deroulement === 'att' && <Prepa partieId={pin} />}
             {deroulement === 'start' && <Start partieId={pin} />}
 
@@ -67,6 +69,7 @@ function Game() {
             {deroulement === 'maire' && <Maire />}
             {deroulement === 'voteVillage' && <VoteVillage />}
             {deroulement === 'nuit' && <Nuit />} */}
+            </div>
         </div>
     );
 }
@@ -543,7 +546,7 @@ function Card({ partieId }) {
                                 alt={joueur.etat}
                             />
                         </div>
-                        <p>Statut: {joueur.etat}</p>
+                        <p>{joueur.etat === 'mort' ? 'Mort' : 'En vie'}</p>
                     </div>
                 ))}
             </div>
