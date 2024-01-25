@@ -36,10 +36,12 @@ function Game() {
             {deroulement === 'sorciere' && <Sorciere partieId={pin} />}
             {deroulement === 'passageJour' && <PassageJour partieId={pin} />}
             {deroulement === 'victoireLoup' && <VictoireLoup partieId={pin} />}
-            {deroulement === 'villageois' && <Jour partieId={pin} />}
+            {deroulement === 'jour' && <Jour partieId={pin} />}
             {deroulement === 'chasseur' && <Chasseur partieId={pin} />}
             {deroulement === 'maire' && <Maire partieId={pin} />}
-            {deroulement === 'voteVillage' && <VoteVillage partieId={pin} />}
+            {deroulement === 'villageois' && <VoteVillage partieId={pin} />}
+            {deroulement === 'passageNuit' && <PassageNuit partieId={pin} />}
+            {deroulement === 'villageoisWin' && <VictoireVillageois partieId={pin} />}
             {deroulement === 'nuit' && <Nuit partieId={pin} />}
 
 
@@ -215,8 +217,7 @@ function VictoireLoup({ partieId }) {
 function Jour({ partieId }) {
     document.body.className = 'bcgroundJ';
     setTimeout(() => {
-        changeDeroulement(partieId, "chasseur");
-        console.log("C’est le matin, le village se réveille, tout le monde se réveille et ouvre les yeux…");
+        changeDeroulement(partieId, "villageois");
     }, 2000);
 
     return (
@@ -247,13 +248,24 @@ function Maire({ partieId }) {
 }
 
 function VoteVillage({ partieId }) {
+    EffectuerVoteVillageois(partieId);
     setTimeout(() => {
-        changeDeroulement(partieId, "nuit");
+        changeDeroulement(partieId, "passageNuit");
         console.log("vote de la personne à tuer");
-    }, 2000);
+    }, 120000);
 
     return (
-        <h1>vote de la personne à tuer</h1>
+        <h1>Vote de la personne à tuer</h1>
+    );
+}
+
+function VictoireVillageois({ partieId }) {
+    setTimeout(() => {
+        changeDeroulement(partieId, "fin");
+    }, 20000);
+
+    return (
+        <h1>Les villageois ont gagnées</h1>
     );
 }
 
@@ -353,7 +365,7 @@ function PassageJour({partieId}) {
                 const joueursVivants = Object.values(joueursMisAJour).filter(joueur => joueur.etat === 'vivant');
                 const sontTousLoups = joueursVivants.every(joueur => joueur.role === 'loup');
 
-                const nouvelEtatDeroulement = sontTousLoups ? 'victoireLoup' : 'villageois';
+                const nouvelEtatDeroulement = sontTousLoups ? 'victoireLoup' : 'jour';
                 update(ref(db, 'Partie' + partieId), { deroulement: nouvelEtatDeroulement });
             }).catch(error => {
                 console.error('Erreur lors de la mise à jour des états des joueurs:', error);
@@ -365,6 +377,97 @@ function PassageJour({partieId}) {
 
     return null; // La fonction ne renvoie rien pour le rendu
 }
+
+
+function EffectuerVoteVillageois(partieId) {
+    const db = getDatabase();
+    const joueursRef = ref(db, 'Partie' + partieId + '/Joueurs');
+
+    useEffect(() => {
+        const unsubscribe = onValue(joueursRef, (snapshot) => {
+            const joueurs = snapshot.val();
+            const joueursVivants = Object.values(joueurs).filter(j => j.etat === 'vivant').length;
+
+            let totalVotes = 0;
+            let maxVotes = 0;
+            let candidats = [];
+
+            // Calculer le total des votes
+            Object.entries(joueurs).forEach(([key, joueur]) => {
+                totalVotes += joueur.vote;
+
+                if (joueur.vote > maxVotes) {
+                    maxVotes = joueur.vote;
+                    candidats = [key];
+                } else if (joueur.vote === maxVotes) {
+                    candidats.push(key);
+                }
+            });
+
+            if (totalVotes === joueursVivants) {
+                const selectionne = candidats[Math.floor(Math.random() * candidats.length)];
+                console.log(selectionne);
+                changeEtat(partieId, selectionne, "presqueMort");
+
+                // Réinitialiser les votes et votePoster
+                const updates = {};
+                Object.keys(joueurs).forEach(joueurKey => {
+                    updates[`Joueurs/${joueurKey}/vote`] = 0;
+                    updates[`Joueurs/${joueurKey}/votePoster`] = false;
+                });
+
+                update(ref(db, 'Partie' + partieId), updates)
+                    .then(() => {
+                        changeDeroulement(partieId, "passageNuit"); 
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la réinitialisation des votes:', error);
+                    });
+            }
+        });
+
+        return () => unsubscribe();
+    }, [partieId]);
+
+    return null; 
+}
+
+function PassageNuit({partieId}) {
+    const db = getDatabase();
+    const partieRef = ref(db, 'Partie' + partieId);
+
+    useEffect(() => {
+        const unsubscribe = onValue(partieRef, (snapshot) => {
+            const partieData = snapshot.val();
+            const joueurs = partieData.Joueurs;
+            const updates = {};
+
+            // Mise à jour des états des joueurs de "presqueMort" à "mort"
+            Object.entries(joueurs).forEach(([key, joueur]) => {
+                if (joueur.etat === 'presqueMort') {
+                    updates[`Joueurs/${key}/etat`] = 'mort';
+                }
+            });
+
+            update(ref(db, 'Partie' + partieId), updates).then(() => {
+                const joueursMisAJour = { ...joueurs, ...updates };
+                const loupsVivants = Object.values(joueursMisAJour).filter(joueur => joueur.role === 'loup' && joueur.etat === 'vivant').length;
+
+                // Vérifier s'il reste des loups vivants
+                const nouvelEtatDeroulement = loupsVivants === 0 ? 'villageoisWin' : 'nuit';
+                update(ref(db, 'Partie' + partieId), { deroulement: nouvelEtatDeroulement });
+            }).catch(error => {
+                console.error('Erreur lors de la mise à jour des états des joueurs:', error);
+            });
+        });
+
+        return () => unsubscribe();
+    }, [partieId]);
+
+    return null; // La fonction ne renvoie rien pour le rendu
+}
+
+
 
 
 
