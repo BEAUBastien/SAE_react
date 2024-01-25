@@ -37,7 +37,8 @@ function Game() {
             <div class="main-container-card"><Card partieId={pin} /></div>
             <div class="main-container-deroule">
             {deroulement === 'att' && <Prepa partieId={pin} />}
-            {deroulement === 'start' && <Start partieId={pin} />}
+            {deroulement === 'start' && <RoleLook partieId={pin} />}
+            {deroulement === 'go' && <Start partieId={pin} />}
 
             {/* {deroulement === 'loup' && <EffectuerVote partieId={pin} />} */}
 
@@ -126,7 +127,16 @@ function Prepa({ partieId }) {
 
 
 
+function RoleLook({ partieId }) {
+    setTimeout(() => {
+        changeDeroulement(partieId, "go");
+        console.log("Cupidon se réveille !");
+    }, 20000);
 
+    return (
+        <h1>Vous pouvez regarder discretement vos roles</h1>
+    );
+}
 
 function Start({ partieId }) {
 
