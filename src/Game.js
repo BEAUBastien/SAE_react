@@ -131,7 +131,7 @@ function RoleLook({ partieId }) {
     setTimeout(() => {
         changeDeroulement(partieId, "go");
         console.log("Cupidon se réveille !");
-    }, 20000);
+    }, 5000);
 
     return (
         <h1>Vous pouvez regarder discretement vos roles</h1>
