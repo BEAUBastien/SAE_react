@@ -4,7 +4,7 @@ import 'firebase/database'
 import firebaseConfig from './config'
 import { DataSnapshot, getDatabase, onValue, ref, set, update, remove, get } from 'firebase/database';
 import { useState, useEffect } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams, useNavigate } from 'react-router-dom';
 import fourcheImage from './img/fourche.png';
 import deadImage from './img/dead.png';
 //audio
@@ -149,7 +149,7 @@ function Start({ partieId }) {
         changeDeroulement(partieId, "cupidon");
         console.log("C’est la nuit, tout le village s’endort, les joueurs ferment les yeux");
         console.log("cc");
-    }, 20000);
+    }, 5000);
 
     return (
         <h1>C’est la nuit, tout le village s’endort, les joueurs ferment les yeux</h1>
@@ -160,7 +160,7 @@ function Cupidon({ partieId }) {
     setTimeout(() => {
         changeDeroulement(partieId, "voyante");
         console.log("Cupidon se réveille !");
-    }, 20000);
+    }, 6000);
 
     return (
         <h1>Cupidon se réveille !</h1>
@@ -231,7 +231,7 @@ function Sorciere({ partieId }) {
     setTimeout(() => {
         changeDeroulement(partieId, "passageJour"); 
         console.log("La Sorcière se réveille, je lui montre la victime des Loups-Garous. Va-t-elle user de sa potion de guérison, ou d’empoisonnement ?");
-    }, 20000);
+    }, 120000);
 
     return (
         <h1>La Sorcière se réveille, je lui montre la victime des Loups-Garous. Va-t-elle user de sa potion de guérison, ou d’empoisonnement ?</h1>
@@ -239,13 +239,11 @@ function Sorciere({ partieId }) {
 }
 
 function VictoireLoup({ partieId }) {
-    const navigate = useNavigate();
     const audio = new Audio(rickAudio_victoire_loup);
     audio.play();
     setTimeout(() => {
         changeDeroulement(partieId, "fin");
-        navigate('/loupvictoire');
-    }, 20000);
+    }, 120000);
 
     return (
         <h1>Les loups ont gagnées</h1>
@@ -258,7 +256,7 @@ function Jour({ partieId }) {
     document.body.className = 'bcgroundJ';
     setTimeout(() => {
         changeDeroulement(partieId, "villageois");
-    }, 20000);
+    }, 4000);
 
     return (
         <h1>C’est le matin, le village se réveille, tout le monde se réveille et ouvre les yeux…</h1>
@@ -306,7 +304,7 @@ function VictoireVillageois({ partieId }) {
     audio.play();
     setTimeout(() => {
         changeDeroulement(partieId, "fin");
-    }, 20000);
+    }, 120000);
 
     return (
         <h1>Les villageois ont gagnées</h1>
@@ -321,7 +319,7 @@ function Nuit({ partieId }) {
     setTimeout(() => {
         changeDeroulement(partieId, "voyante");
         console.log("Cupidon se réveille !");
-    }, 2000);
+    }, 5000);
     console.log("C’est la nuit, tout le village s’endort, les joueurs ferment les yeux");
     return (
         <h1>
