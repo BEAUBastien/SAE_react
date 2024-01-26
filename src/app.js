@@ -6,6 +6,7 @@ import ConfigPage from './ConfigPage';
 import GameHub from './GameHub';
 import Game from './Game';
 import Card from './card';
+import LoupVictoire from "./LoupVictoire";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/hub/:pin" element={<GameHub />} />
           <Route path="/game/:pin/game" element={<Game />} />
           <Route path="/card" element={<Card />} />
+          <Route path="/loupvictoire" element={<LoupVictoire />} />
         </Routes>
       </div>
     </Router>
