@@ -159,12 +159,19 @@ function Start({ partieId }) {
 }
 
 function Cupidon({ partieId }) {
-    const audio = new Audio(rickAudio_cupidon);
-    audio.play();
-    setTimeout(() => {
-        changeDeroulement(partieId, "voyante");
-        console.log("Cupidon se réveille !");
-    }, 6000);
+    useEffect(() => {
+        const audio = new Audio(rickAudio_cupidon);
+        audio.play();
+
+        const timer = setTimeout(() => {
+            changeDeroulement(partieId, "voyante");
+            console.log("Cupidon se réveille !");
+        }, 6000); 
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [partieId]);
 
     return (
         <h1>Cupidon se réveille !</h1>
@@ -173,13 +180,19 @@ function Cupidon({ partieId }) {
 
 
 function Voyante({ partieId }) {
-    const audio = new Audio(rickAudio_voyante);
-    audio.play();
+    useEffect(() => {
+        const audio = new Audio(rickAudio_voyante);
+        audio.play();
 
-    setTimeout(() => {
-        changeDeroulement(partieId, "loup");
-        console.log("La Voyante se réveille, et désigne un joueur dont elle veut sonder la véritable personnalité !");
-    }, 120000);
+        const timer = setTimeout(() => {
+            changeDeroulement(partieId, "loup");
+        }, 120000);
+
+        // Fonction de nettoyage pour annuler le timer lors du démontage du composant ou avant la création d'un nouveau timer
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [partieId]);
 
     return (
         <h1>La Voyante se réveille, et désigne un joueur dont elle veut sonder la véritable personnalité !</h1>
@@ -201,12 +214,17 @@ function Voyante({ partieId }) {
 
 function Loups({ partieId }) {
     const audio = new Audio(rickAudio_loup);
-    audio.play();
-    EffectuerVoteLoup(partieId);
-    setTimeout(() => {
+        audio.play();
+        EffectuerVoteLoup(partieId);
+    useEffect(() => {
+        const timer = setTimeout(() => {
             changeDeroulement(partieId, "sorciere");
-            console.log("Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!");
-    }, 120000);
+        }, 120000); 
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [partieId]);
 
     return (
         <div>
@@ -216,12 +234,18 @@ function Loups({ partieId }) {
 }
 
 function Sorciere({ partieId }) {
-    const audio4 = new Audio(rickAudio_soricere);
-    audio4.play();
-    setTimeout(() => {
-        changeDeroulement(partieId, "passageJour"); 
-        console.log("La Sorcière se réveille, je lui montre la victime des Loups-Garous. Va-t-elle user de sa potion de guérison, ou d’empoisonnement ?");
-    }, 120000);
+    useEffect(() => {
+        const audio4 = new Audio(rickAudio_soricere);
+        audio4.play();
+
+        const timer = setTimeout(() => {
+            changeDeroulement(partieId, "passageJour"); 
+        }, 120000);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [partieId]);
 
     return (
         <h1>La Sorcière se réveille, je lui montre la victime des Loups-Garous. Va-t-elle user de sa potion de guérison, ou d’empoisonnement ?</h1>
@@ -241,12 +265,19 @@ function VictoireLoup({ partieId }) {
 }
 
 function Jour({ partieId }) {
-    const audio = new Audio(rickAudio_matin);
-    audio.play();
-    document.body.className = 'bcgroundJ';
-    setTimeout(() => {
-        changeDeroulement(partieId, "villageois");
-    }, 4000);
+    useEffect(() => {
+        const audio = new Audio(rickAudio_matin);
+        audio.play();
+        document.body.className = 'bcgroundJ';
+
+        const timer = setTimeout(() => {
+            changeDeroulement(partieId, "villageois");
+        }, 4000); 
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [partieId]);
 
     return (
         <h1>C’est le matin, le village se réveille, tout le monde se réveille et ouvre les yeux…</h1>
@@ -277,12 +308,19 @@ function Maire({ partieId }) {
 
 function VoteVillage({ partieId }) {
     const audio = new Audio(rickAudio_vote);
-    audio.play();
-    EffectuerVoteVillageois(partieId);
-    setTimeout(() => {
-        changeDeroulement(partieId, "passageNuit");
-        console.log("vote de la personne à tuer");
-    }, 120000);
+        audio.play();
+        EffectuerVoteVillageois(partieId);
+    useEffect(() => {
+        
+
+        const timer = setTimeout(() => {
+            changeDeroulement(partieId, "passageNuit");
+        }, 120000); 
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [partieId]); 
 
     return (
         <h1>Le village doit maintenant choisir qui tuer !</h1>
@@ -303,14 +341,19 @@ function VictoireVillageois({ partieId }) {
 
 function Nuit({ partieId }) {
 
-    const audio = new Audio(rickAudio_start);
-    audio.play();
-    document.body.className = 'bcgroundN';
-    setTimeout(() => {
-        changeDeroulement(partieId, "voyante");
-        console.log("Cupidon se réveille !");
-    }, 7000);
-    console.log("C’est la nuit, tout le village s’endort, les joueurs ferment les yeux");
+    useEffect(() => {
+        const audio = new Audio(rickAudio_start);
+        audio.play();
+        document.body.className = 'bcgroundN';
+
+        const timer = setTimeout(() => {
+            changeDeroulement(partieId, "voyante");
+        }, 7000); 
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [partieId]);
     return (
         <h1>
             C’est la nuit, tout le village s’endort, les joueurs ferment les yeux
@@ -392,15 +435,22 @@ function PassageJour({partieId}) {
                 }
             });
 
-            // Appliquer les mises à jour
             update(ref(db, 'Partie' + partieId), updates).then(() => {
                 const joueursMisAJour = { ...joueurs, ...updates };
 
-                // Vérifier les conditions de victoire
-                const joueursVivants = Object.values(joueursMisAJour).filter(joueur => joueur.etat === 'vivant');
-                const sontTousLoups = joueursVivants.every(joueur => joueur.role === 'loup');
+                
+                const loupsVivants = Object.values(joueursMisAJour).some(joueur => joueur.role === 'loup' && joueur.etat === 'vivant');
 
-                const nouvelEtatDeroulement = sontTousLoups ? 'victoireLoup' : 'jour';
+                let nouvelEtatDeroulement;
+                if (!loupsVivants) {
+                    nouvelEtatDeroulement = 'villageoisWin';
+                } else {
+                    // Vérifier si tous les joueurs vivants sont des loups
+                    const joueursVivants = Object.values(joueursMisAJour).filter(joueur => joueur.etat === 'vivant');
+                    const sontTousLoups = joueursVivants.every(joueur => joueur.role === 'loup');
+                    nouvelEtatDeroulement = sontTousLoups ? 'victoireLoup' : 'jour';
+                }
+
                 update(ref(db, 'Partie' + partieId), { deroulement: nouvelEtatDeroulement });
             }).catch(error => {
                 console.error('Erreur lors de la mise à jour des états des joueurs:', error);
@@ -412,7 +462,6 @@ function PassageJour({partieId}) {
 
     return null; // La fonction ne renvoie rien pour le rendu
 }
-
 
 function EffectuerVoteVillageois(partieId) {
     const db = getDatabase();
