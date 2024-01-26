@@ -129,6 +129,8 @@ function Prepa({ partieId }) {
 
 
 function RoleLook({ partieId }) {
+    const audio = new Audio(rickAudio_role);
+    audio.play();
     setTimeout(() => {
         changeDeroulement(partieId, "go");
         console.log("Cupidon se réveille !");
@@ -157,6 +159,8 @@ function Start({ partieId }) {
 }
 
 function Cupidon({ partieId }) {
+    const audio = new Audio(rickAudio_cupidon);
+    audio.play();
     setTimeout(() => {
         changeDeroulement(partieId, "voyante");
         console.log("Cupidon se réveille !");
@@ -198,29 +202,15 @@ function Voyante({ partieId }) {
 function Loups({ partieId }) {
     const audio = new Audio(rickAudio_loup);
     audio.play();
-    const [timer, setTimer] = useState(45); // Initialiser le timer à 45 secondes
     EffectuerVoteLoup(partieId);
-    useEffect(() => {
-        // Si le timer est à 0, passer à l'étape suivante
-        if (timer === 0) {
+    setTimeout(() => {
             changeDeroulement(partieId, "sorciere");
             console.log("Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!");
-            return;
-        }
-
-        // Décrémenter le timer chaque seconde
-        const timerId = setTimeout(() => {
-            setTimer(timer - 1);
-        }, 120000);
-
-        // Nettoyer le timeout lors du démontage du composant
-        return () => clearTimeout(timerId);
-    }, [timer, partieId]);
+    }, 120000);
 
     return (
         <div>
             <h1>Les Loups-Garous se réveillent, se reconnaissent et désignent une nouvelle victime !!!</h1>
-            <p>Temps restant: {timer} secondes</p>
         </div>
     );
 }
@@ -319,7 +309,7 @@ function Nuit({ partieId }) {
     setTimeout(() => {
         changeDeroulement(partieId, "voyante");
         console.log("Cupidon se réveille !");
-    }, 5000);
+    }, 7000);
     console.log("C’est la nuit, tout le village s’endort, les joueurs ferment les yeux");
     return (
         <h1>
