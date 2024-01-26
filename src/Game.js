@@ -17,6 +17,8 @@ import rickAudio_matin from './audio/rick_5.wav';
 import rickAudio_vote from './audio/rick_6.wav';
 import rickAudio_victoire_vill from './audio/rick_7.wav';
 import rickAudio_victoire_loup from './audio/rick_8.wav';
+import rickAudio_role from './audio/rick_9.wav';
+import rickAudio_cupidon from './audio/rick_10.wav';
 
 function Game() {
     let { pin } = useParams();
@@ -128,6 +130,8 @@ function Prepa({ partieId }) {
 
 
 function RoleLook({ partieId }) {
+    const audio = new Audio(rickAudio_role);
+    audio.play();
     setTimeout(() => {
         changeDeroulement(partieId, "go");
         console.log("Cupidon se réveille !");
@@ -148,7 +152,7 @@ function Start({ partieId }) {
         changeDeroulement(partieId, "cupidon");
         console.log("C’est la nuit, tout le village s’endort, les joueurs ferment les yeux");
         console.log("cc");
-    }, 20000);
+    }, 5000);
 
     return (
         <h1>C’est la nuit, tout le village s’endort, les joueurs ferment les yeux</h1>
@@ -156,13 +160,15 @@ function Start({ partieId }) {
 }
 
 function Cupidon({ partieId }) {
+    const audio = new Audio(rickAudio_cupidon);
+    audio.play();
     setTimeout(() => {
         changeDeroulement(partieId, "voyante");
         console.log("Cupidon se réveille !");
-    }, 20000);
+    }, 6000);
 
     return (
-        <h1>Cupidon se réveille !</h1>
+        <h1>C'est maintenant au tour de Cupidon de sélectionner les deux amants qui seront unis pour la vie.</h1>
     );
 }
 
@@ -230,7 +236,7 @@ function Sorciere({ partieId }) {
     setTimeout(() => {
         changeDeroulement(partieId, "passageJour"); 
         console.log("La Sorcière se réveille, je lui montre la victime des Loups-Garous. Va-t-elle user de sa potion de guérison, ou d’empoisonnement ?");
-    }, 20000);
+    }, 120000);
 
     return (
         <h1>La Sorcière se réveille, je lui montre la victime des Loups-Garous. Va-t-elle user de sa potion de guérison, ou d’empoisonnement ?</h1>
@@ -242,7 +248,7 @@ function VictoireLoup({ partieId }) {
     audio.play();
     setTimeout(() => {
         changeDeroulement(partieId, "fin");
-    }, 20000);
+    }, 120000);
 
     return (
         <h1>Les loups ont gagnées</h1>
@@ -255,7 +261,7 @@ function Jour({ partieId }) {
     document.body.className = 'bcgroundJ';
     setTimeout(() => {
         changeDeroulement(partieId, "villageois");
-    }, 20000);
+    }, 4000);
 
     return (
         <h1>C’est le matin, le village se réveille, tout le monde se réveille et ouvre les yeux…</h1>
@@ -303,7 +309,7 @@ function VictoireVillageois({ partieId }) {
     audio.play();
     setTimeout(() => {
         changeDeroulement(partieId, "fin");
-    }, 20000);
+    }, 120000);
 
     return (
         <h1>Les villageois ont gagnées</h1>
@@ -318,7 +324,7 @@ function Nuit({ partieId }) {
     setTimeout(() => {
         changeDeroulement(partieId, "voyante");
         console.log("Cupidon se réveille !");
-    }, 2000);
+    }, 5000);
     console.log("C’est la nuit, tout le village s’endort, les joueurs ferment les yeux");
     return (
         <h1>
